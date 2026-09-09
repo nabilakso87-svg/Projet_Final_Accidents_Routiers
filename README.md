@@ -6,11 +6,11 @@ Ce projet est réalisé dans le cadre de ma formation Data Analyst.
 
 Il porte sur l'analyse des accidents corporels de la circulation en France entre 2020 et 2024 à partir des données officielles BAAC (Bulletins d'Analyse des Accidents Corporels).
 
-L'objectif est d'exploiter ces données afin d'identifier les principaux facteurs associés à la gravité des accidents et de mettre en évidence des situations et profils à risque.
+L'objectif est d'étudier l'évolution des accidents et d'identifier les situations et profils associés aux accidents les plus graves.
 
 ## Problématique
 
-**Quels facteurs sont associés à la gravité des accidents corporels de la circulation en France entre 2020 et 2024, et comment l'analyse des données peut-elle permettre d'identifier des situations et profils à risque ?**
+**Comment les accidents corporels de la circulation ont-ils évolué en France entre 2020 et 2024, et quels facteurs permettent d’identifier les situations et profils associés aux accidents les plus graves ?**
 
 ## Source des données
 
@@ -32,7 +32,10 @@ Les données sont organisées en trois niveaux :
 - `data/raw` : fichiers BAAC originaux téléchargés pour les années 2020 à 2024 ;
 - `data/interim` : fichiers intermédiaires obtenus après harmonisation et consolidation des données annuelles ;
 - `data/processed` : fichiers nettoyés et préparés pour les analyses suivantes.
+
 ## Travail réalisé
+
+### 1. Préparation et nettoyage des données
 
 La première phase du projet a permis de préparer et de fiabiliser les données BAAC avant leur exploitation.
 
@@ -40,14 +43,67 @@ Les principales étapes réalisées sont :
 
 - collecte et organisation des fichiers BAAC de 2020 à 2024 ;
 - contrôle de la structure des fichiers annuels ;
-- harmonisation des colonnes et des types de données entre les différentes années ;
-- consolidation des données 2020 à 2024 par catégorie ;
+- harmonisation des colonnes et des types de données ;
+- consolidation des données 2020 à 2024 ;
 - analyse des valeurs manquantes, doublons et valeurs incohérentes ;
 - traitement des données en tenant compte de la documentation officielle BAAC ;
 - sélection et renommage des variables utiles ;
 - création des fichiers nettoyés pour Caractéristiques, Lieux, Véhicules et Usagers ;
 - contrôle des identifiants et des relations entre les quatre catégories de données ;
-- validation de la cohérence globale des données avant la modélisation relationnelle.  
+- validation de la cohérence globale des données.
+
+### 2. Modélisation relationnelle
+
+Un modèle relationnel a été construit à partir des quatre principales entités :
+
+- Accident ;
+- Lieu ;
+- Véhicule ;
+- Usager.
+
+Les clés primaires et étrangères ont été définies afin de représenter les relations entre les différentes tables.
+
+Le MCD et le MLD ont été réalisés avec Looping.
+
+### 3. Création et chargement de la base SQL
+
+Une base de données SQLite a été créée à partir du modèle relationnel.
+
+Les quatre tables ont été chargées avec les données nettoyées :
+
+- Accident : 268 788 lignes ;
+- Lieu : 294 438 lignes ;
+- Vehicule : 459 137 lignes ;
+- Usager : 612 181 lignes.
+
+Des contrôles ont ensuite été réalisés afin de vérifier :
+
+- le nombre de lignes chargées ;
+- l'intégrité des relations entre les tables ;
+- l'absence de lignes orphelines ;
+- le respect des clés étrangères ;
+- la bonne prise en compte des valeurs manquantes.
+
+### 4. Analyses SQL
+
+Des requêtes SQL ont été réalisées afin de répondre progressivement à la problématique du projet.
+
+Les analyses portent notamment sur :
+
+- l'évolution annuelle et mensuelle des accidents ;
+- la répartition des accidents selon l'heure ;
+- les conditions atmosphériques ;
+- les conditions de luminosité ;
+- la gravité selon les départements ;
+- la gravité en et hors agglomération ;
+- la catégorie des usagers ;
+- les tranches d'âge ;
+- le sexe des usagers.
+
+Pour les analyses de gravité, un indicateur de **gravité élevée** a été défini dans le cadre du projet comme regroupant les usagers **tués ou blessés hospitalisés**.
+
+Les résultats sont étudiés à la fois en nombre de cas et en taux afin de distinguer le volume des accidents de la proportion de situations graves.
+
 ## Structure du projet
 
 ```text
@@ -73,50 +129,61 @@ Projet_Final_Accidents_Routiers/
 │       ├── usagers_2020_2024_clean.csv
 │       └── vehicules_2020_2024_clean.csv
 │
+├── modelisation/
+│   ├── MCD_BAAC_2020_2024.jpg
+│   ├── MLD_BAAC_2020_2024.jpg
+│   └── MCD_BAAC_2020_2024.loo
+│
 ├── 01_preparation_donnees_2020_2024.ipynb
 ├── 02_preparation_lieux_2020_2024.ipynb
 ├── 03_preparation_vehicules_2020_2024.ipynb
 ├── 04_preparation_usagers_2020_2024.ipynb
 ├── 05_controle_global_donnees.ipynb
 │
+├── 01_creation_tables.sql
+├── 02_controle_chargement.sql
+├── 03_requetes_analyse.sql
+│
 ├── .gitignore
 ├── requirements.txt
 └── README.md
-``` 
+```
+
 ## Technologies utilisées
 
-À ce stade du projet, les principaux outils et technologies utilisés sont :
+Les principaux outils et technologies utilisés à ce stade sont :
 
-- Python
-- Pandas
-- NumPy
-- Jupyter Notebook
-- VS Code
-- Git / GitHub
+- Python ;
+- Pandas ;
+- NumPy ;
+- Jupyter Notebook ;
+- VS Code ;
+- Looping ;
+- SQLite ;
+- SQL ;
+- DBeaver ;
+- Git / GitHub.
 
-D'autres technologies seront ajoutées au fur et à mesure de l'avancement du projet, notamment SQL, Power BI et des outils de Machine Learning.
+D'autres technologies seront ajoutées au fur et à mesure de l'avancement du projet, notamment Power BI et les bibliothèques nécessaires au Machine Learning.
 
 ## Prochaines étapes
 
 Les prochaines étapes prévues sont :
 
-1. concevoir le modèle relationnel des données ;
-2. créer et alimenter la base de données SQL ;
-3. réaliser les analyses SQL ;
-4. développer et tester une API REST ;
-5. réaliser l'analyse exploratoire des données ;
-6. réaliser une veille IA / Big Data ;
-7. définir les indicateurs et construire le tableau de bord Power BI ;
-8. préparer les données pour le Machine Learning ;
-9. entraîner, optimiser et comparer plusieurs modèles ;
-10. analyser les performances, risques et limites des modèles ;
-11. préparer la restitution finale du projet.
+1. développer et tester une API REST ;
+2. réaliser l'analyse exploratoire des données (EDA) ;
+3. réaliser une veille IA / Big Data ;
+4. définir les indicateurs et préparer les données pour Power BI ;
+5. construire le tableau de bord Power BI ;
+6. préparer les données pour le Machine Learning ;
+7. entraîner, optimiser et comparer plusieurs modèles ;
+8. évaluer les performances, risques et limites des modèles ;
+9. préparer la présentation et la restitution finale.
 
 ## Statut du projet
 
 🚧 **Projet en cours de développement**
 
-La préparation, le nettoyage et le contrôle global des données BAAC 2020-2024 sont terminés.
+La préparation et le nettoyage des données, la modélisation relationnelle, la création et le chargement de la base SQLite ainsi que les principales analyses SQL sont terminés.
 
-La prochaine étape concerne la modélisation relationnelle des données avant la création de la base SQL.
-  
+La prochaine étape concerne le développement et le test de l'API REST.
