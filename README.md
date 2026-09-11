@@ -104,10 +104,49 @@ Pour les analyses de gravité, un indicateur de **gravité élevée** a été d�
 
 Les résultats sont étudiés à la fois en nombre de cas et en taux afin de distinguer le volume des accidents de la proportion de situations graves.
 
+### 5. API REST
+
+Une API REST a été développée avec FastAPI afin d'exposer les données de la table Accident stockées dans la base SQLite `baac_2020_2024.db`.
+
+L'API permet de réaliser les quatre opérations CRUD :
+
+- GET : consulter les accidents ;
+- POST : créer un accident ;
+- PUT : modifier un accident ;
+- DELETE : supprimer un accident.
+
+L'API est lancée depuis la racine du projet avec la commande :
+
+```bash
+uvicorn api.main:app --reload
+```
+
+La documentation interactive Swagger est accessible à l'adresse :
+
+`http://127.0.0.1:8000/docs`
+
+Les principaux endpoints disponibles sont :
+
+| Méthode | Endpoint | Fonction |
+|---|---|---|
+| GET | `/` | Vérifier le fonctionnement de l'API |
+| GET | `/accidents` | Récupérer les 10 premiers accidents |
+| GET | `/accidents/{num_acc}` | Récupérer un accident précis |
+| POST | `/accidents` | Créer un accident |
+| PUT | `/accidents/{num_acc}` | Modifier un accident |
+| DELETE | `/accidents/{num_acc}` | Supprimer un accident |
+
+Les opérations CRUD ont été testées dans Swagger avec une donnée fictive `TEST_API_001`, ensuite supprimée de la base.
+
+La gestion d'un accident inexistant a également été vérifiée avec une réponse HTTP 404.
+
 ## Structure du projet
 
 ```text
 Projet_Final_Accidents_Routiers/
+│
+├── api/
+│   └── main.py
 │
 ├── data/
 │   ├── raw/
@@ -134,16 +173,18 @@ Projet_Final_Accidents_Routiers/
 │   ├── MLD_BAAC_2020_2024.jpg
 │   └── MCD_BAAC_2020_2024.loo
 │
+├── sql/
+│   ├── 01_creation_tables.sql
+│   ├── 02_controle_chargement.sql
+│   └── 03_requetes_analyse.sql
+│
 ├── 01_preparation_donnees_2020_2024.ipynb
 ├── 02_preparation_lieux_2020_2024.ipynb
 ├── 03_preparation_vehicules_2020_2024.ipynb
 ├── 04_preparation_usagers_2020_2024.ipynb
 ├── 05_controle_global_donnees.ipynb
 │
-├── 01_creation_tables.sql
-├── 02_controle_chargement.sql
-├── 03_requetes_analyse.sql
-│
+├── baac_2020_2024.db
 ├── .gitignore
 ├── requirements.txt
 └── README.md
@@ -162,6 +203,9 @@ Les principaux outils et technologies utilisés à ce stade sont :
 - SQLite ;
 - SQL ;
 - DBeaver ;
+- FastAPI ;
+- Uvicorn ;
+- Swagger ;
 - Git / GitHub.
 
 D'autres technologies seront ajoutées au fur et à mesure de l'avancement du projet, notamment Power BI et les bibliothèques nécessaires au Machine Learning.
@@ -170,20 +214,19 @@ D'autres technologies seront ajoutées au fur et à mesure de l'avancement du pr
 
 Les prochaines étapes prévues sont :
 
-1. développer et tester une API REST ;
-2. réaliser l'analyse exploratoire des données (EDA) ;
-3. réaliser une veille IA / Big Data ;
-4. définir les indicateurs et préparer les données pour Power BI ;
-5. construire le tableau de bord Power BI ;
-6. préparer les données pour le Machine Learning ;
-7. entraîner, optimiser et comparer plusieurs modèles ;
-8. évaluer les performances, risques et limites des modèles ;
-9. préparer la présentation et la restitution finale.
+1. réaliser l'analyse exploratoire des données (EDA) ;
+2. réaliser une veille IA / Big Data ;
+3. définir les indicateurs et préparer les données pour Power BI ;
+4. construire le tableau de bord Power BI ;
+5. préparer les données pour le Machine Learning ;
+6. entraîner, optimiser et comparer plusieurs modèles ;
+7. évaluer les performances, risques et limites des modèles ;
+8. préparer la présentation et la restitution finale.
 
 ## Statut du projet
 
 🚧 **Projet en cours de développement**
 
-La préparation et le nettoyage des données, la modélisation relationnelle, la création et le chargement de la base SQLite ainsi que les principales analyses SQL sont terminés.
+La préparation et le nettoyage des données, la modélisation relationnelle, la création et le chargement de la base SQLite, les principales analyses SQL ainsi que le développement et le test de l'API REST sont terminés.
 
-La prochaine étape concerne le développement et le test de l'API REST.
+La prochaine étape concerne l'analyse exploratoire des données (EDA).
