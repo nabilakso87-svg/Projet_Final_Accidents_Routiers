@@ -15,3 +15,6 @@ Thumbs.db
 
 # Base de données SQLite locale
 *.db
+
+# Modèles Machine Learning sauvegardés
+/modelisation/modeles/*.joblib

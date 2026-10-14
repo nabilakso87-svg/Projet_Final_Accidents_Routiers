@@ -269,6 +269,64 @@ Le tableau de bord permet de :
 **Google Looker Studio a été retenu en remplacement de Power BI, initialement envisagé pour le projet.**
 
 
+### 10. Machine Learning — Prédiction de la gravité des accidents
+
+Une démarche de Machine Learning supervisé a été mise en œuvre afin de prédire si un accident corporel présente une gravité élevée, définie par la présence d'au moins un usager tué ou blessé hospitalisé.
+
+L'analyse a été réalisée dans le notebook `07_machine_learning_gravite.ipynb` à partir des données BAAC 2020-2024.
+
+#### Préparation des données
+
+- Construction d'une variable cible binaire : accident non grave (0) ou grave (1) ;
+- Sélection de 14 variables explicatives relatives aux circonstances, aux conditions de circulation et aux infrastructures routières ;
+- Séparation des données en jeux d'apprentissage, de validation et de test ;
+- Prétraitement des variables numériques et catégorielles avec des pipelines Scikit-learn ;
+- Contrôle de l'absence de chevauchement entre les jeux de données.
+
+#### Entraînement et comparaison des modèles
+
+Deux algorithmes de classification ont été entraînés et comparés : la régression logistique et le Random Forest.
+
+| Modèle | Accuracy | Précision | Rappel | F1-score | ROC-AUC |
+|---|---:|---:|---:|---:|---:|
+| Régression logistique | 72,54 % | 66,64 % | 46,51 % | 54,78 % | 75,23 % |
+| Random Forest (seuil 0,50) | 71,90 % | 60,28 % | 62,87 % | 61,55 % | 76,41 % |
+
+Ces premiers résultats ont montré que le Random Forest détectait davantage d'accidents graves que la régression logistique.
+
+#### Validation et optimisation
+
+Un jeu de validation distinct du jeu de test a été utilisé pour sélectionner le seuil de classification en maximisant le F1-score de la classe grave.
+
+Le seuil retenu est de **0,45**.
+
+#### Performances finales sur le jeu de test
+
+| Indicateur | Résultat |
+|---|---:|
+| Accuracy | 69,67 % |
+| Précision — classe grave | 56,05 % |
+| Rappel — classe grave | 70,45 % |
+| F1-score — classe grave | 62,43 % |
+| ROC-AUC | 76,41 % |
+
+Sur les 19 228 accidents graves du jeu de test, le modèle en identifie correctement 13 547. En revanche, 5 681 accidents graves ne sont pas détectés, soit 29,55 %.
+
+#### Interprétation et limites
+
+Une analyse par importance de permutation a notamment mis en évidence l'agglomération, le type de collision, la catégorie de route, le régime de circulation et la vitesse maximale autorisée parmi les variables les plus influentes.
+
+Ces importances décrivent la contribution des variables aux prédictions du modèle ; elles ne permettent pas d'établir des relations causales.
+
+Le modèle constitue un outil d'analyse prédictive exploratoire et ne doit pas être interprété comme un dispositif opérationnel de prévention sans validation supplémentaire.
+
+#### Sauvegarde du modèle
+
+Le pipeline final Random Forest, son seuil de classification et la liste des variables ont été sauvegardés dans `modelisation/modeles/random_forest_gravite.joblib`.
+
+Le rechargement a été vérifié et les prédictions obtenues sont identiques à celles du modèle initial. Le fichier `.joblib` est exclu du dépôt GitHub par le fichier `.gitignore` afin de limiter la taille du dépôt.
+  
+
 ```text
 Projet_Final_Accidents_Routiers/
 │
@@ -311,6 +369,8 @@ Projet_Final_Accidents_Routiers/
 │   ├── MCD_BAAC_2020_2024.jpg
 │   ├── MLD_BAAC_2020_2024.jpg
 │   └── MCD_BAAC_2020_2024.loo
+│   └── modeles/
+│       └── random_forest_gravite.joblib  (non suivi par Git)
 │
 ├── sql/
 │   ├── 01_creation_tables.sql
@@ -323,7 +383,8 @@ Projet_Final_Accidents_Routiers/
 ├── 04_preparation_usagers_2020_2024.ipynb
 ├── 05_controle_global_donnees.ipynb
 ├── 06_analyse_exploratoire.ipynb
-│
+├── 07_machine_learning_gravite.ipynb
+|
 ├── baac_2020_2024.db
 ├── .gitignore
 ├── requirements.txt
@@ -349,25 +410,40 @@ Les principaux outils et technologies utilisés à ce stade sont :
 - Swagger ;
 - Git / GitHub ;
 - Google Looker Studio ;
-- Google Maps (visualisation géographique).
+- Google Maps (visualisation géographique);
+- Scikit-learn (prétraitement, classification et évaluation) ;
+- Matplotlib (visualisation des résultats) ;
+- Joblib (sauvegarde et rechargement du modèle).
 
-Les bibliothèques de Machine Learning seront précisées après l'entraînement et l'évaluation des modèles. Power BI, initialement envisagé, a été remplacé par Looker Studio.
+Power BI, initialement envisagé, a été remplacé par Looker Studio.
 
 ## Prochaines étapes
 
 Les prochaines étapes prévues sont :
 
-1. mettre à jour la documentation et publier les modifications sur GitHub ;
-2. préparer les données pour le Machine Learning ;
-3. entraîner, optimiser et comparer plusieurs modèles ;
-4. évaluer les performances, les risques et les limites des modèles ;
-5. préparer la présentation et la restitution finale ;
-6. vérifier les livrables et clôturer le projet.
+1. Finaliser la documentation du projet et les livrables ;
+2. Mettre à jour le dépôt GitHub ;
+3. Préparer la présentation et la restitution finale ;
+4. Vérifier la reproductibilité des analyses et du modèle ;
+5. Réaliser les derniers contrôles et clôturer le projet.
+
 
 ## Statut du projet
 
-🚧 **Projet en cours de développement**
+🚧 **Projet en cours de finalisation**
 
-La préparation et le nettoyage des données, la modélisation relationnelle, la base SQLite, les analyses SQL, l'API REST, l'analyse exploratoire, la veille technologique et le tableau de bord Looker Studio sont réalisés.
+Les principales phases techniques sont réalisées :
 
-**Étape actuelle :** mise à jour du README et préparation de la publication GitHub. **À venir :** Machine Learning, évaluation et restitution finale.
+- Préparation, nettoyage et contrôle des données BAAC 2020-2024 ;
+- Modélisation relationnelle et création de la base SQLite ;
+- Analyses SQL ;
+- Développement et tests de l'API REST ;
+- Analyse exploratoire des données ;
+- Veille technologique IA / Big Data ;
+- Création du tableau de bord interactif Looker Studio ;
+- Préparation des données, entraînement, comparaison et évaluation des modèles de Machine Learning ;
+- Optimisation du seuil de classification et sauvegarde du modèle final.
+
+**Étape actuelle :** finalisation de la documentation et mise à jour du dépôt GitHub.
+
+**À venir :** préparation de la présentation finale, vérification des livrables et clôture du projet.
