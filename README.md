@@ -32,7 +32,8 @@ Les données sont organisées en trois niveaux :
 - `data/raw` : fichiers BAAC originaux téléchargés pour les années 2020 à 2024 ;
 - `data/interim` : fichiers intermédiaires obtenus après harmonisation et consolidation des données annuelles ;
 - `data/processed` : fichiers nettoyés et préparés pour les analyses suivantes.
-
+- `data/looker_studio/` : fichiers CSV préparés pour les visualisations dans Google Looker Studio.
+  
 ## Travail réalisé
 
 ### 1. Préparation et nettoyage des données
@@ -140,7 +141,133 @@ Les opérations CRUD ont été testées dans Swagger avec une donnée fictive `T
 
 La gestion d'un accident inexistant a également été vérifiée avec une réponse HTTP 404.
 
-## Structure du projet
+
+### 6. Analyse exploratoire des données (EDA)
+
+Une analyse exploratoire des données a été réalisée afin de mieux comprendre les caractéristiques des accidents corporels de la circulation en France entre 2020 et 2024.
+
+Cette analyse a notamment porté sur :
+
+- L'évolution annuelle, trimestrielle et mensuelle des accidents ;
+- La répartition des accidents selon les périodes de l'année ;
+- Les conditions de luminosité ;
+- Les conditions atmosphériques ;
+- La localisation géographique des accidents ;
+- Les caractéristiques des usagers ;
+- Les catégories de véhicules impliqués ;
+- La gravité des accidents et les profils concernés.
+
+L'objectif est d'identifier les principales tendances, de comparer les différentes catégories et de préparer les indicateurs et visualisations nécessaires à la restitution des résultats.
+
+Les analyses ont été réalisées avec Python, notamment Pandas, dans le notebook :
+
+`06_analyse_exploratoire.ipynb`
+
+### 7. Veille technologique IA / Big Data
+
+Une veille technologique a été réalisée afin d'identifier les principales évolutions dans les domaines de l'intelligence artificielle et de l'exploitation des données.
+
+Quatre thématiques ont été étudiées :
+
+1. **IA agentique (Agentic AI)** : systèmes d'intelligence artificielle capables de réaliser des tâches complexes en plusieurs étapes.
+2. **AI-ready data** : importance de la qualité, de la préparation et de la gouvernance des données pour les applications d'intelligence artificielle.
+3. **Real-time data et streaming** : traitement et exploitation des flux de données en temps réel.
+4. **IA responsable** : transparence, fiabilité, protection des données et maîtrise des risques liés à l'utilisation de l'intelligence artificielle.
+
+Cette veille permet de mieux comprendre les évolutions technologiques du métier de Data Analyst et leurs implications pour les projets de données.
+
+Le travail est documenté dans le fichier :
+
+`documentation/veille_IA_Big_Data.md`
+
+### 8. Préparation des données pour Looker Studio
+
+Les données BAAC nettoyées ont été préparées pour leur exploitation dans Google Looker Studio, outil retenu pour la création du tableau de bord interactif.
+
+Des fichiers CSV spécifiques ont été créés dans le dossier :
+
+`data/looker_studio/`
+
+Les principales sources sont :
+
+- `caract_2020_2024_clean.csv` ;
+- `lieux_2020_2024_clean.csv` ;
+- `vehicules_2020_2024_clean.csv` ;
+- `usagers_2020_2024_clean.csv`.
+
+Plusieurs opérations ont été réalisées :
+
+- Adaptation des fichiers CSV pour leur importation ;
+- Vérification des types de données ;
+- Configuration des sources de données ;
+- Création de champs calculés ;
+- Définition des dimensions et des métriques ;
+- Configuration des agrégations ;
+- Préparation des relations entre les sources ;
+- Vérification de la cohérence des indicateurs et prévention des doubles comptages.
+
+Cette étape a permis de préparer les données nécessaires à la création des visualisations.
+
+### 9. Création du tableau de bord Looker Studio
+
+Un tableau de bord interactif intitulé **Accidents routiers en France — 2020-2024** a été réalisé avec Google Looker Studio.
+
+Il comprend quatre pages thématiques.
+
+#### Page 1 — Vue d'ensemble
+
+Cette page présente les principaux indicateurs du projet :
+
+| Indicateur | Valeur |
+|---|---:|
+| Nombre d'accidents | 268 788 |
+| Nombre d'usagers | 612 181 |
+| Nombre de tués | 16 379 |
+| Nombre de blessés hospitalisés | 93 525 |
+
+Ces KPI permettent d'obtenir une vision globale des accidents corporels étudiés sur la période 2020-2024.
+
+#### Page 2 — Temporalité et circonstances
+
+Cette page permet d'étudier l'évolution des accidents dans le temps et selon leurs circonstances.
+
+Elle présente notamment :
+
+- L'évolution trimestrielle des accidents par année ;
+- L'évolution mensuelle des accidents par année ;
+- La répartition selon les conditions de luminosité ;
+- La répartition selon les conditions atmosphériques.
+
+#### Page 3 — Profils et véhicules
+
+Cette page est consacrée à l'analyse des caractéristiques des usagers et des véhicules impliqués dans les accidents.
+
+Elle permet notamment d'étudier les différents profils d'usagers et les catégories de véhicules.
+
+#### Page 4 — Géographie et gravité
+
+Cette page présente la répartition géographique des accidents et les indicateurs liés à leur gravité.
+
+Elle permet notamment :
+
+- D'explorer la localisation des accidents ;
+- De comparer les territoires ;
+- D'étudier les différences de gravité ;
+- De mettre en évidence les zones présentant des volumes importants d'accidents.
+
+#### Objectifs du tableau de bord
+
+Le tableau de bord permet de :
+
+- Présenter les résultats de manière claire et synthétique ;
+- Faciliter l'exploration interactive des données ;
+- Comparer les années 2020 à 2024 ;
+- Identifier les principales tendances ;
+- Mettre en évidence les situations associées aux accidents graves ;
+- Appuyer les conclusions de l'analyse.
+
+**Google Looker Studio a été retenu en remplacement de Power BI, initialement envisagé pour le projet.**
+
 
 ```text
 Projet_Final_Accidents_Routiers/
@@ -162,12 +289,24 @@ Projet_Final_Accidents_Routiers/
 │   │   ├── usagers_2020_2024.csv
 │   │   └── vehicules_2020_2024.csv
 │   │
-│   └── processed/
+│   ├── processed/
+│   |   ├── caract_2020_2024_clean.csv
+│   |   ├── lieux_2020_2024_clean.csv
+│   |   ├── usagers_2020_2024_clean.csv
+│   |   └── vehicules_2020_2024_clean.csv
+|   |
+|   └── looker_studio/
+|       ├── accidents_par_departement_annee.csv
 │       ├── caract_2020_2024_clean.csv
+│       ├── gravite_usagers_par_annee.csv
 │       ├── lieux_2020_2024_clean.csv
-│       ├── usagers_2020_2024_clean.csv
-│       └── vehicules_2020_2024_clean.csv
-│
+|       ├── usagers_2020_2024_clean.csv
+│       ├── usagers_sexe_par_annee.csv
+│       ├── usagers_tranches_age_par_annee.csv
+│       ├── vehicules_2020_2024_clean.csv 
+|       └── vehicules_categories_par_annee.csv
+├── documentation/
+|
 ├── modelisation/
 │   ├── MCD_BAAC_2020_2024.jpg
 │   ├── MLD_BAAC_2020_2024.jpg
@@ -183,12 +322,14 @@ Projet_Final_Accidents_Routiers/
 ├── 03_preparation_vehicules_2020_2024.ipynb
 ├── 04_preparation_usagers_2020_2024.ipynb
 ├── 05_controle_global_donnees.ipynb
+├── 06_analyse_exploratoire.ipynb
 │
 ├── baac_2020_2024.db
 ├── .gitignore
 ├── requirements.txt
 └── README.md
 ```
+
 
 ## Technologies utilisées
 
@@ -206,27 +347,27 @@ Les principaux outils et technologies utilisés à ce stade sont :
 - FastAPI ;
 - Uvicorn ;
 - Swagger ;
-- Git / GitHub.
+- Git / GitHub ;
+- Google Looker Studio ;
+- Google Maps (visualisation géographique).
 
-D'autres technologies seront ajoutées au fur et à mesure de l'avancement du projet, notamment Power BI et les bibliothèques nécessaires au Machine Learning.
+Les bibliothèques de Machine Learning seront précisées après l'entraînement et l'évaluation des modèles. Power BI, initialement envisagé, a été remplacé par Looker Studio.
 
 ## Prochaines étapes
 
 Les prochaines étapes prévues sont :
 
-1. réaliser l'analyse exploratoire des données (EDA) ;
-2. réaliser une veille IA / Big Data ;
-3. définir les indicateurs et préparer les données pour Power BI ;
-4. construire le tableau de bord Power BI ;
-5. préparer les données pour le Machine Learning ;
-6. entraîner, optimiser et comparer plusieurs modèles ;
-7. évaluer les performances, risques et limites des modèles ;
-8. préparer la présentation et la restitution finale.
+1. mettre à jour la documentation et publier les modifications sur GitHub ;
+2. préparer les données pour le Machine Learning ;
+3. entraîner, optimiser et comparer plusieurs modèles ;
+4. évaluer les performances, les risques et les limites des modèles ;
+5. préparer la présentation et la restitution finale ;
+6. vérifier les livrables et clôturer le projet.
 
 ## Statut du projet
 
 🚧 **Projet en cours de développement**
 
-La préparation et le nettoyage des données, la modélisation relationnelle, la création et le chargement de la base SQLite, les principales analyses SQL ainsi que le développement et le test de l'API REST sont terminés.
+La préparation et le nettoyage des données, la modélisation relationnelle, la base SQLite, les analyses SQL, l'API REST, l'analyse exploratoire, la veille technologique et le tableau de bord Looker Studio sont réalisés.
 
-La prochaine étape concerne l'analyse exploratoire des données (EDA).
+**Étape actuelle :** mise à jour du README et préparation de la publication GitHub. **À venir :** Machine Learning, évaluation et restitution finale.
