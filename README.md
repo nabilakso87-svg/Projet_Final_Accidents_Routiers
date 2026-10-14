@@ -292,40 +292,88 @@ Deux algorithmes de classification ont été entraînés et comparés : la régr
 | Régression logistique | 72,54 % | 66,64 % | 46,51 % | 54,78 % | 75,23 % |
 | Random Forest (seuil 0,50) | 71,90 % | 60,28 % | 62,87 % | 61,55 % | 76,41 % |
 
-Ces premiers résultats ont montré que le Random Forest détectait davantage d'accidents graves que la régression logistique.
+
+Les premiers résultats ont montré que le Random Forest présentait un meilleur rappel et un meilleur F1-score pour la classe des accidents graves que la régression logistique.
+
+Une optimisation complémentaire des hyperparamètres a ensuite été réalisée avec GridSearchCV afin d'améliorer les performances du modèle.
+
+
 
 #### Validation et optimisation
 
-Un jeu de validation distinct du jeu de test a été utilisé pour sélectionner le seuil de classification en maximisant le F1-score de la classe grave.
+Le Random Forest a été optimisé avec GridSearchCV, en évaluant 8 configurations d'hyperparamètres par validation croisée à 3 plis.
 
-Le seuil retenu est de **0,45**.
+Les hyperparamètres retenus sont :
+
+- `n_estimators = 150`
+- `max_depth = 20`
+- `min_samples_leaf = 5`
+
+Un seuil de classification de 0,45 a été conservé pour favoriser la détection des accidents graves.
+
+Le modèle optimisé a ensuite été entraîné et évalué sur le jeu de test.
+
 
 #### Performances finales sur le jeu de test
 
+Le Random Forest optimisé avec GridSearchCV, associé à un seuil de classification de 0,45, a obtenu les performances suivantes :
+
 | Indicateur | Résultat |
 |---|---:|
-| Accuracy | 69,67 % |
-| Précision — classe grave | 56,05 % |
-| Rappel — classe grave | 70,45 % |
-| F1-score — classe grave | 62,43 % |
-| ROC-AUC | 76,41 % |
+| Accuracy | 69,44 % |
+| Précision — classe grave | 55,68 % |
+| Rappel — classe grave | 71,27 % |
+| F1-score — classe grave | 62,52 % |
+| ROC-AUC | 76,54 % |
 
-Sur les 19 228 accidents graves du jeu de test, le modèle en identifie correctement 13 547. En revanche, 5 681 accidents graves ne sont pas détectés, soit 29,55 %.
+Sur les 19 228 accidents graves du jeu de test, le modèle en identifie correctement 13 704.
+
+En revanche, 5 524 accidents graves ne sont pas détectés, soit un taux de non-détection de 28,73 %.
+
+Ces résultats montrent que le modèle optimisé privilégie la détection des accidents graves, tout en conservant des limites importantes liées aux erreurs de classification.
+
+
 
 #### Interprétation et limites
 
-Une analyse par importance de permutation a notamment mis en évidence l'agglomération, le type de collision, la catégorie de route, le régime de circulation et la vitesse maximale autorisée parmi les variables les plus influentes.
+Le Random Forest optimisé permet d'identifier 71,27 % des accidents graves du jeu de test.
 
-Ces importances décrivent la contribution des variables aux prédictions du modèle ; elles ne permettent pas d'établir des relations causales.
+Cependant, 28,73 % des accidents graves ne sont pas détectés. Le modèle génère également des fausses alertes, ce qui limite son utilisation pour des décisions opérationnelles.
 
-Le modèle constitue un outil d'analyse prédictive exploratoire et ne doit pas être interprété comme un dispositif opérationnel de prévention sans validation supplémentaire.
+Les résultats dépendent de la qualité et de la représentativité des données BAAC 2020-2024.
+
+Les variables explicatives peuvent présenter des biais liés à la collecte des données, aux caractéristiques des territoires ou aux conditions de circulation.
+
+Les prédictions mettent en évidence des associations statistiques et ne permettent pas d'établir des relations causales.
+
+Le modèle constitue donc un outil d'analyse prédictive exploratoire. Son utilisation opérationnelle nécessiterait des validations complémentaires.
+
 
 #### Sauvegarde du modèle
 
-Le pipeline final Random Forest, son seuil de classification et la liste des variables ont été sauvegardés dans `modelisation/modeles/random_forest_gravite.joblib`.
+Le Random Forest optimisé avec GridSearchCV a été retenu comme modèle final du projet.
 
-Le rechargement a été vérifié et les prédictions obtenues sont identiques à celles du modèle initial. Le fichier `.joblib` est exclu du dépôt GitHub par le fichier `.gitignore` afin de limiter la taille du dépôt.
-  
+Le pipeline entraîné, le seuil de classification (0,45) et la liste des variables explicatives ont été sauvegardés dans `modeles/random_forest_optimise.joblib`.
+
+Le rechargement du modèle a été vérifié avec succès. Les probabilités et les prédictions obtenues après rechargement sont identiques à celles du modèle avant sauvegarde.
+
+Le fichier `.joblib` est exclu du dépôt GitHub via `.gitignore`.
+
+
+### 11. Présentation finale du projet
+
+Une présentation de synthèse du projet BAAC 2020-2024 a été réalisée afin de restituer les principales étapes et les résultats de l'analyse.
+
+Elle présente notamment :
+
+- Le contexte, les objectifs et la problématique du projet ;
+- La collecte, le nettoyage et la préparation des données ;
+- La modélisation relationnelle et les analyses SQL ;
+- L'analyse exploratoire et les visualisations Looker Studio ;
+- La démarche de Machine Learning et les performances du modèle retenu ;
+- Les principales conclusions, limites et perspectives du projet.
+
+Cette présentation constitue le support de restitution finale du projet.
 
 ```text
 Projet_Final_Accidents_Routiers/
@@ -365,12 +413,13 @@ Projet_Final_Accidents_Routiers/
 |       └── vehicules_categories_par_annee.csv
 ├── documentation/
 |
+├── modeles/
+│   └── random_forest_optimise.joblib (non suivi par Git)
+|
 ├── modelisation/
 │   ├── MCD_BAAC_2020_2024.jpg
 │   ├── MLD_BAAC_2020_2024.jpg
-│   └── MCD_BAAC_2020_2024.loo
-│   └── modeles/
-│       └── random_forest_gravite.joblib  (non suivi par Git)
+│   └── MCD_BAAC_2020_2024.loo  
 │
 ├── sql/
 │   ├── 01_creation_tables.sql
@@ -417,33 +466,33 @@ Les principaux outils et technologies utilisés à ce stade sont :
 
 Power BI, initialement envisagé, a été remplacé par Looker Studio.
 
+
 ## Prochaines étapes
 
-Les prochaines étapes prévues sont :
+Les principales étapes techniques et la présentation finale du projet sont réalisées.
 
-1. Finaliser la documentation du projet et les livrables ;
-2. Mettre à jour le dépôt GitHub ;
-3. Préparer la présentation et la restitution finale ;
-4. Vérifier la reproductibilité des analyses et du modèle ;
-5. Réaliser les derniers contrôles et clôturer le projet.
+Les dernières actions concernent :
+
+1. Vérifier la cohérence et la reproductibilité des livrables.
+2. Finaliser la mise à jour du dépôt GitHub.
+3. Effectuer les derniers contrôles avant la clôture définitive du projet.
 
 
 ## Statut du projet
 
-🚧 **Projet en cours de finalisation**
+**Projet finalisé — Dernières vérifications avant clôture**
 
-Les principales phases techniques sont réalisées :
+Les principales phases du projet sont terminées :
 
 - Préparation, nettoyage et contrôle des données BAAC 2020-2024 ;
 - Modélisation relationnelle et création de la base SQLite ;
-- Analyses SQL ;
-- Développement et tests de l'API REST ;
+- Analyses SQL et développement de l'API REST ;
 - Analyse exploratoire des données ;
 - Veille technologique IA / Big Data ;
 - Création du tableau de bord interactif Looker Studio ;
-- Préparation des données, entraînement, comparaison et évaluation des modèles de Machine Learning ;
-- Optimisation du seuil de classification et sauvegarde du modèle final.
+- Entraînement, comparaison et optimisation des modèles de Machine Learning ;
+- Évaluation et sauvegarde du Random Forest optimisé ;
+- Documentation des résultats et des limites ;
+- Réalisation de la présentation finale du projet.
 
-**Étape actuelle :** finalisation de la documentation et mise à jour du dépôt GitHub.
-
-**À venir :** préparation de la présentation finale, vérification des livrables et clôture du projet.
+**Étape actuelle :** vérification finale des livrables et synchronisation du dépôt GitHub.

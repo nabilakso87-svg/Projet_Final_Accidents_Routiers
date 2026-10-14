@@ -17,4 +17,4 @@ Thumbs.db
 *.db
 
 # Modèles Machine Learning sauvegardés
-/modelisation/modeles/*.joblib
+*.joblib
