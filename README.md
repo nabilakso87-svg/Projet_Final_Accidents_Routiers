@@ -493,6 +493,9 @@ Les principales phases du projet sont terminées :
 - Entraînement, comparaison et optimisation des modèles de Machine Learning ;
 - Évaluation et sauvegarde du Random Forest optimisé ;
 - Documentation des résultats et des limites ;
-- Réalisation de la présentation finale du projet.
+- Réalisation de la présentation finale du projet: https://docs.google.com/presentation/d/1cvEBQzYGaCFl7TlcMBBQ5af8KtdASEld/edit?usp=sharing&ouid=108251817034539537029&rtpof=true&sd=true
+  
+- lien trello: https://trello.com/b/nuFvzeVP/projet-final-data-analyst-accidents-routiers-baac-2020-2024
+
 
 **Étape actuelle :** vérification finale des livrables et synchronisation du dépôt GitHub.
